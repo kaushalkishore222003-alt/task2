@@ -1,5 +1,7 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import ProtectedRoute from "../components/ProtectedRoute";
+import RoleRoute from "../components/RoleRoute";
 
 // Layouts
 const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
@@ -10,6 +12,7 @@ const LandingPage = lazy(() => import("../pages/LandingPage"));
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("../pages/auth/SignupPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("../pages/auth/ResetPasswordPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 
 // Protected Pages
@@ -37,23 +40,36 @@ export const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: "projects", element: <ProjectsPage /> },
-      { path: "projects/:id", element: <SingleProjectPage /> },
-      { path: "tasks", element: <TasksPage /> },
-      { path: "kanban", element: <KanbanPage /> },
-      { path: "analytics", element: <AnalyticsPage /> },
-      { path: "notifications", element: <NotificationsPage /> },
-      { path: "team", element: <TeamPage /> },
-      { path: "profile", element: <ProfilePage /> },
-      { path: "settings", element: <SettingsPage /> },
-      { path: "admin", element: <AdminPage /> },
+      {
+        element: <DashboardLayout />,
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: "projects", element: <ProjectsPage /> },
+          { path: "projects/:id", element: <SingleProjectPage /> },
+          { path: "tasks", element: <TasksPage /> },
+          { path: "kanban", element: <KanbanPage /> },
+          { path: "notifications", element: <NotificationsPage /> },
+          { path: "profile", element: <ProfilePage /> },
+          { path: "settings", element: <SettingsPage /> },
+          
+          // Role Based Routes
+          {
+            element: <RoleRoute allowedRoles={['ADMIN']} />,
+            children: [
+              { path: "analytics", element: <AnalyticsPage /> },
+              { path: "team", element: <TeamPage /> },
+              { path: "admin", element: <AdminPage /> },
+            ]
+          }
+        ],
+      },
     ],
   },
   {

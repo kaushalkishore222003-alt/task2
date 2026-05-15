@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle, Users, BarChart3, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle, Users, BarChart3, Zap, LayoutDashboard } from "lucide-react";
+import { useAuthStore } from "../context/useAuthStore";
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <div className="bg-white overflow-hidden selection:bg-primary-light">
       {/* Navbar */}
@@ -18,13 +21,24 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center space-x-10">
               <a href="#features" className="text-gray-500 hover:text-ink font-bold text-sm uppercase tracking-widest transition-colors">Features</a>
               <a href="#pricing" className="text-gray-500 hover:text-ink font-bold text-sm uppercase tracking-widest transition-colors">Pricing</a>
-              <Link to="/auth/login" className="text-gray-500 hover:text-ink font-bold text-sm uppercase tracking-widest transition-colors">Login</Link>
-              <Link
-                to="/auth/signup"
-                className="bg-primary-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-ink transition-all shadow-xl shadow-primary-dark/10 active:scale-95"
-              >
-                Get Started
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  to="/dashboard"
+                  className="bg-primary-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-ink transition-all shadow-xl shadow-primary-dark/10 active:scale-95 flex items-center"
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link to="/auth/login" className="text-gray-500 hover:text-ink font-bold text-sm uppercase tracking-widest transition-colors">Login</Link>
+                  <Link
+                    to="/auth/signup"
+                    className="bg-primary-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-ink transition-all shadow-xl shadow-primary-dark/10 active:scale-95"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -60,24 +74,7 @@ export default function LandingPage() {
             >
               Get Started <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <button className="px-10 py-5 bg-white border border-gray-100 text-ink rounded-full font-bold text-lg hover:border-ink transition-all uppercase tracking-widest">
-              The Manifesto
-            </button>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Dashboard Mockup */}
-      <section className="px-6 pb-32">
-        <div className="max-w-6xl mx-auto card-base h-[500px] lg:h-[700px] relative overflow-hidden bg-gray-50">
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary-dark/5 to-transparent flex items-center justify-center">
-            <div className="text-center group cursor-pointer">
-               <div className="w-20 h-20 bg-white rounded-full border border-gray-100 shadow-xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
-                  <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-primary-dark border-b-[10px] border-b-transparent ml-1" />
-               </div>
-               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Watch the Workflow</p>
-            </div>
-          </div>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   LayoutDashboard, 
@@ -18,14 +18,16 @@ import {
   Search
 } from "lucide-react";
 import { cn } from "../utils/cn";
+import { useAuthStore } from "../context/useAuthStore";
+import { toast } from "sonner";
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Projects', href: '/dashboard/projects', icon: Briefcase },
   { name: 'Tasks', href: '/dashboard/tasks', icon: CheckSquare },
   { name: 'Kanban', href: '/dashboard/kanban', icon: Trello },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
-  { name: 'Team', href: '/dashboard/team', icon: Users },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart2, adminOnly: true },
+  { name: 'Team', href: '/dashboard/team', icon: Users, adminOnly: true },
 ];
 
 const secondaryNavigation = [
@@ -38,6 +40,17 @@ const secondaryNavigation = [
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/auth/login');
+  };
+
+  const filteredNavigation = navigation.filter(item => !item.adminOnly || user?.role === 'ADMIN');
+  const filteredSecondaryNavigation = secondaryNavigation.filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
     <div className="min-h-screen bg-white flex selection:bg-primary-light">
@@ -52,7 +65,7 @@ export default function DashboardLayout() {
           </div>
 
           <nav className="flex-1 px-6 space-y-1">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const active = location.pathname === item.href;
               return (
                 <Link
@@ -76,16 +89,20 @@ export default function DashboardLayout() {
             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Your Account</p>
               <div className="flex items-center space-x-3">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary-dark to-accent overflow-hidden" />
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="h-10 w-10 rounded-full object-cover border border-gray-200" />
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary-dark to-accent overflow-hidden" />
+                )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-ink truncate">Alex Johnson</p>
-                  <p className="text-[10px] text-gray-500 font-medium">Pro Plan</p>
+                  <p className="text-sm font-bold text-ink truncate">{user?.name || 'User'}</p>
+                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{user?.role || 'Member'}</p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-1 pb-8">
-              {secondaryNavigation.map((item) => (
+            <div className="space-y-1 pb-4">
+              {filteredSecondaryNavigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -100,6 +117,13 @@ export default function DashboardLayout() {
                   {item.name}
                 </Link>
               ))}
+              <button 
+                onClick={handleLogout}
+                className="w-full group flex items-center px-4 py-2 text-xs font-medium rounded-lg text-red-500 hover:bg-red-50 transition-all duration-200"
+              >
+                <LogOut className="mr-3 h-4 w-4 text-red-400 group-hover:text-red-600" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -182,7 +206,7 @@ export default function DashboardLayout() {
                  <h1 className="text-2xl font-bold text-primary-dark font-display">SyncroTask</h1>
                </div>
                <nav className="mt-5 px-2 space-y-1">
-                 {navigation.map((item) => (
+                 {filteredNavigation.map((item) => (
                    <Link
                      key={item.name}
                      to={item.href}
@@ -190,15 +214,34 @@ export default function DashboardLayout() {
                      className={cn(
                        location.pathname === item.href
                          ? 'bg-primary-dark text-white'
-                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                       'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                         : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900',
+                       'group flex items-center px-4 py-3 text-base rounded-2xl transition-all duration-300'
                      )}
                    >
-                     <item.icon className="mr-4 h-6 w-6" />
+                     <item.icon className="mr-3 h-6 w-6" />
                      {item.name}
                    </Link>
                  ))}
                </nav>
+               <div className="mt-auto p-4 border-t border-gray-100">
+                  <div className="flex items-center space-x-3 mb-4 px-2">
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt="Avatar" className="h-10 w-10 rounded-full" />
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-primary-dark" />
+                    )}
+                    <div>
+                      <p className="text-sm font-bold text-ink">{user?.name}</p>
+                      <p className="text-xs text-gray-400">{user?.role}</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center px-4 py-3 text-red-500 font-bold text-sm hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <LogOut className="mr-3 h-5 w-5" /> Logout
+                  </button>
+               </div>
             </div>
           </div>
         </div>
