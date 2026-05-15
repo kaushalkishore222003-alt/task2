@@ -1,0 +1,6 @@
+{
+  "name": "SyncroTask - Team Task Manager",
+  "description": "A modern, professional SaaS team task management platform featuring real-time collaboration, Kanban boards, and advanced analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
