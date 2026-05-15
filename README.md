@@ -5,10 +5,6 @@
 
 A modern full-stack inspired task management application built using React, TypeScript, and TailwindCSS.  
 Users can manage projects, assign tasks, track progress, and collaborate through a clean dashboard interface.
-
-🔗 Live AI Studio Preview:  
-https://ai.studio/apps/26eb9c60-414f-4538-b443-b727564937b6
-
 </div>
 
 ---
