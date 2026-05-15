@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import ProtectedRoute from "../components/ProtectedRoute";
-import RoleRoute from "../components/RoleRoute";
+import { ProtectedRoute, PublicRoute } from "../components/auth/RouteGuards";
 
 // Layouts
 const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
@@ -35,12 +34,17 @@ export const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <AuthLayout />,
+    element: <PublicRoute />,
     children: [
-      { path: "login", element: <LoginPage /> },
-      { path: "signup", element: <SignupPage /> },
-      { path: "forgot-password", element: <ForgotPasswordPage /> },
-      { path: "reset-password", element: <ResetPasswordPage /> },
+      {
+        element: <AuthLayout />,
+        children: [
+          { path: "login", element: <LoginPage /> },
+          { path: "signup", element: <SignupPage /> },
+          { path: "forgot-password", element: <ForgotPasswordPage /> },
+          { path: "reset-password", element: <ResetPasswordPage /> },
+        ],
+      }
     ],
   },
   {
@@ -55,21 +59,14 @@ export const router = createBrowserRouter([
           { path: "projects/:id", element: <SingleProjectPage /> },
           { path: "tasks", element: <TasksPage /> },
           { path: "kanban", element: <KanbanPage /> },
+          { path: "analytics", element: <ProtectedRoute allowedRoles={['ADMIN']} />, children: [{ index: true, element: <AnalyticsPage /> }] },
           { path: "notifications", element: <NotificationsPage /> },
+          { path: "team", element: <TeamPage /> },
           { path: "profile", element: <ProfilePage /> },
           { path: "settings", element: <SettingsPage /> },
-          
-          // Role Based Routes
-          {
-            element: <RoleRoute allowedRoles={['ADMIN']} />,
-            children: [
-              { path: "analytics", element: <AnalyticsPage /> },
-              { path: "team", element: <TeamPage /> },
-              { path: "admin", element: <AdminPage /> },
-            ]
-          }
+          { path: "admin", element: <ProtectedRoute allowedRoles={['ADMIN']} />, children: [{ index: true, element: <AdminPage /> }] },
         ],
-      },
+      }
     ],
   },
   {

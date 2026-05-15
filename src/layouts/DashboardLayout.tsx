@@ -18,23 +18,31 @@ import {
   Search
 } from "lucide-react";
 import { cn } from "../utils/cn";
-import { useAuthStore } from "../context/useAuthStore";
-import { toast } from "sonner";
+import { useAuthStore } from "../store/useAuthStore";
 
-const navigation = [
+const baseNavigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Projects', href: '/dashboard/projects', icon: Briefcase },
-  { name: 'Tasks', href: '/dashboard/tasks', icon: CheckSquare },
-  { name: 'Kanban', href: '/dashboard/kanban', icon: Trello },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart2, adminOnly: true },
-  { name: 'Team', href: '/dashboard/team', icon: Users, adminOnly: true },
 ];
 
-const secondaryNavigation = [
+const memberNavigation = [
+  ...baseNavigation,
+  { name: 'My Tasks', href: '/dashboard/tasks', icon: CheckSquare },
+  { name: 'Kanban', href: '/dashboard/kanban', icon: Trello },
+];
+
+const adminNavigation = [
+  ...baseNavigation,
+  { name: 'All Tasks', href: '/dashboard/tasks', icon: CheckSquare },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
+  { name: 'Team Management', href: '/dashboard/team', icon: Users },
+  { name: 'Admin Panel', href: '/dashboard/admin', icon: ShieldCheck },
+];
+
+const sharedSecondary = [
   { name: 'Notifications', href: '/dashboard/notifications', icon: Bell },
   { name: 'Profile', href: '/dashboard/profile', icon: User },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-  { name: 'Admin Panel', href: '/dashboard/admin', icon: ShieldCheck, adminOnly: true },
 ];
 
 export default function DashboardLayout() {
@@ -45,12 +53,10 @@ export default function DashboardLayout() {
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
     navigate('/auth/login');
   };
 
-  const filteredNavigation = navigation.filter(item => !item.adminOnly || user?.role === 'ADMIN');
-  const filteredSecondaryNavigation = secondaryNavigation.filter(item => !item.adminOnly || user?.role === 'ADMIN');
+  const navigation = user?.role === 'ADMIN' ? adminNavigation : memberNavigation;
 
   return (
     <div className="min-h-screen bg-white flex selection:bg-primary-light">
@@ -58,14 +64,16 @@ export default function DashboardLayout() {
       <div className="hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 bg-white border-r border-gray-100">
         <div className="flex flex-col flex-grow pt-8 pb-4 overflow-y-auto">
           <div className="flex items-center space-x-3 px-8 mb-12">
-            <div className="w-10 h-10 bg-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary-dark/20">
-               <div className="w-5 h-5 bg-white rounded-sm rotate-45" />
-            </div>
-            <span className="text-2xl font-bold text-primary-dark tracking-tighter">Syncro.</span>
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary-dark/20">
+                 <div className="w-5 h-5 bg-white rounded-sm rotate-45" />
+              </div>
+              <span className="text-2xl font-bold text-primary-dark tracking-tighter">Syncro.</span>
+            </Link>
           </div>
 
           <nav className="flex-1 px-6 space-y-1">
-            {filteredNavigation.map((item) => {
+            {navigation.map((item) => {
               const active = location.pathname === item.href;
               return (
                 <Link
@@ -89,20 +97,20 @@ export default function DashboardLayout() {
             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Your Account</p>
               <div className="flex items-center space-x-3">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="Avatar" className="h-10 w-10 rounded-full object-cover border border-gray-200" />
-                ) : (
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary-dark to-accent overflow-hidden" />
-                )}
+                <img 
+                  src={user?.avatar} 
+                  className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary-dark to-accent overflow-hidden" 
+                  alt={user?.name}
+                />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-ink truncate">{user?.name || 'User'}</p>
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{user?.role || 'Member'}</p>
+                  <p className="text-sm font-bold text-ink truncate">{user?.name}</p>
+                  <p className="text-[10px] text-gray-500 font-medium uppercase">{user?.role} Plan</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-1 pb-4">
-              {filteredSecondaryNavigation.map((item) => (
+              {sharedSecondary.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -119,10 +127,10 @@ export default function DashboardLayout() {
               ))}
               <button 
                 onClick={handleLogout}
-                className="w-full group flex items-center px-4 py-2 text-xs font-medium rounded-lg text-red-500 hover:bg-red-50 transition-all duration-200"
+                className="w-full text-left text-red-400 hover:text-red-600 group flex items-center px-4 py-2 text-xs font-medium rounded-lg transition-all duration-200"
               >
-                <LogOut className="mr-3 h-4 w-4 text-red-400 group-hover:text-red-600" />
-                Logout
+                <LogOut className="mr-3 h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+                Sign Out
               </button>
             </div>
           </div>
@@ -206,7 +214,7 @@ export default function DashboardLayout() {
                  <h1 className="text-2xl font-bold text-primary-dark font-display">SyncroTask</h1>
                </div>
                <nav className="mt-5 px-2 space-y-1">
-                 {filteredNavigation.map((item) => (
+                 {navigation.map((item) => (
                    <Link
                      key={item.name}
                      to={item.href}
@@ -214,34 +222,15 @@ export default function DashboardLayout() {
                      className={cn(
                        location.pathname === item.href
                          ? 'bg-primary-dark text-white'
-                         : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900',
-                       'group flex items-center px-4 py-3 text-base rounded-2xl transition-all duration-300'
+                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                       'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                      )}
                    >
-                     <item.icon className="mr-3 h-6 w-6" />
+                     <item.icon className="mr-4 h-6 w-6" />
                      {item.name}
                    </Link>
                  ))}
                </nav>
-               <div className="mt-auto p-4 border-t border-gray-100">
-                  <div className="flex items-center space-x-3 mb-4 px-2">
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt="Avatar" className="h-10 w-10 rounded-full" />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-primary-dark" />
-                    )}
-                    <div>
-                      <p className="text-sm font-bold text-ink">{user?.name}</p>
-                      <p className="text-xs text-gray-400">{user?.role}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={handleLogout}
-                    className="w-full flex items-center px-4 py-3 text-red-500 font-bold text-sm hover:bg-red-50 rounded-xl transition-all"
-                  >
-                    <LogOut className="mr-3 h-5 w-5" /> Logout
-                  </button>
-               </div>
             </div>
           </div>
         </div>

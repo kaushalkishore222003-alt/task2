@@ -1,28 +1,17 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../context/useAuthStore';
-import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
-
-const signupSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-  role: z.enum(['ADMIN', 'MEMBER']),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type SignupFormValues = z.infer<typeof signupSchema>;
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { signupSchema, SignupFormValues } from '../../utils/authSchemas';
+import { useAuthStore } from '../../store/useAuthStore';
+import { cn } from '../../utils/cn';
 
 export default function SignupPage() {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { signup, loading } = useAuthStore();
-  
+
   const {
     register,
     handleSubmit,
@@ -35,99 +24,109 @@ export default function SignupPage() {
       password: '',
       confirmPassword: '',
       role: 'MEMBER',
-    },
+    }
   });
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
       await signup(data);
-      toast.success('Account created! Welcome to SyncroTask.');
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message || 'Registration failed');
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-4xl editorial-heading text-ink">Join.</h2>
-        <p className="text-sm text-gray-400 mt-2 font-medium">Create your editorial workspace</p>
+        <h2 className="text-4xl editorial-heading text-ink">Join Workspace.</h2>
+        <p className="text-sm text-gray-400 mt-2 font-medium">Create your professional profile</p>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
           <input 
             {...register('name')}
-            className={`block w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none ${errors.name ? 'ring-2 ring-red-500/20 bg-red-50' : ''}`} 
-            placeholder="John Doe" 
+            type="text" 
+            className={cn(
+              "block w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none",
+              errors.name && "ring-2 ring-red-100"
+            )} 
+            placeholder="John Sterling" 
           />
-          {errors.name && <p className="mt-1 ml-1 text-[10px] font-bold text-red-500 uppercase">{errors.name.message}</p>}
+          {errors.name && <p className="mt-1 ml-1 text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.name.message}</p>}
         </div>
+
         <div>
           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Email</label>
           <input 
             {...register('email')}
             type="email" 
-            className={`block w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none ${errors.email ? 'ring-2 ring-red-500/20 bg-red-50' : ''}`} 
+            className={cn(
+              "block w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none",
+              errors.email && "ring-2 ring-red-100"
+            )} 
             placeholder="name@studio.com" 
           />
-          {errors.email && <p className="mt-1 ml-1 text-[10px] font-bold text-red-500 uppercase">{errors.email.message}</p>}
+          {errors.email && <p className="mt-1 ml-1 text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.email.message}</p>}
         </div>
+
+        <div>
+          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Your Role</label>
+          <select 
+            {...register('role')}
+            className={cn(
+              "block w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm text-ink focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none appearance-none",
+              errors.role && "ring-2 ring-red-100"
+            )}
+          >
+            <option value="MEMBER">Team Member</option>
+            <option value="ADMIN">Team Administrator</option>
+          </select>
+          {errors.role && <p className="mt-1 ml-1 text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.role.message}</p>}
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
-          <div>
+          <div className="relative">
             <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Password</label>
             <input 
               {...register('password')}
-              type="password" 
-              className={`block w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none ${errors.password ? 'ring-2 ring-red-500/20 bg-red-50' : ''}`} 
+              type={showPassword ? "text" : "password"} 
+              className={cn(
+                "block w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none",
+                errors.password && "ring-2 ring-red-100"
+              )} 
             />
+            {errors.password && <p className="mt-1 ml-1 text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.password.message}</p>}
           </div>
-          <div>
+
+          <div className="relative">
             <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Confirm</label>
             <input 
               {...register('confirmPassword')}
-              type="password" 
-              className={`block w-full bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none ${errors.confirmPassword ? 'ring-2 ring-red-500/20 bg-red-50' : ''}`} 
+              type={showPassword ? "text" : "password"} 
+              className={cn(
+                "block w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm text-ink placeholder-gray-300 focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none",
+                errors.confirmPassword && "ring-2 ring-red-100"
+              )} 
             />
-          </div>
-        </div>
-        {(errors.password || errors.confirmPassword) && (
-          <p className="mt-1 ml-1 text-[10px] font-bold text-red-500 uppercase text-center">
-            {errors.password?.message || errors.confirmPassword?.message}
-          </p>
-        )}
-
-        <div>
-          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Role</label>
-          <div className="grid grid-cols-2 gap-2">
-            {['MEMBER', 'ADMIN'].map((role) => (
-              <label key={role} className="cursor-pointer">
-                <input 
-                  type="radio" 
-                  value={role} 
-                  {...register('role')} 
-                  className="peer hidden" 
-                />
-                <div className="text-center py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-50 text-gray-400 peer-checked:bg-primary-light peer-checked:text-primary-dark border border-transparent peer-checked:border-primary-dark/10 transition-all">
-                  {role}
-                </div>
-              </label>
-            ))}
+            {errors.confirmPassword && <p className="mt-1 ml-1 text-[10px] text-red-500 font-bold uppercase tracking-wider">{errors.confirmPassword.message}</p>}
           </div>
         </div>
 
         <button 
           disabled={loading}
           type="submit" 
-          className="w-full bg-primary-dark text-white py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-ink transition-all shadow-xl shadow-primary-dark/20 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 mt-4"
+          className="w-full bg-primary-dark text-white py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-ink transition-all shadow-xl shadow-primary-dark/20 active:scale-[0.98] flex items-center justify-center space-x-2 mt-4"
         >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
+          {loading ? <Loader2 className="animate-spin h-5 w-5" /> : <span>Create Account</span>}
         </button>
       </form>
+
       <div className="text-center">
         <p className="text-xs text-gray-400 font-medium">
-          Already have an account? <Link to="/auth/login" className="text-primary-dark font-bold hover:underline">Sign in</Link>
+          Already a member? <Link to="/auth/login" className="text-primary-dark font-bold hover:underline">Sign in instead</Link>
         </p>
       </div>
     </div>

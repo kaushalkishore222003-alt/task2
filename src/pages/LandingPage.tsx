@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle, Users, BarChart3, Zap, LayoutDashboard } from "lucide-react";
-import { useAuthStore } from "../context/useAuthStore";
+import { ArrowRight, CheckCircle, Users, BarChart3, Zap } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -24,9 +24,9 @@ export default function LandingPage() {
               {isAuthenticated ? (
                 <Link
                   to="/dashboard"
-                  className="bg-primary-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-ink transition-all shadow-xl shadow-primary-dark/10 active:scale-95 flex items-center"
+                  className="bg-primary-dark text-white px-8 py-3.5 rounded-full font-bold hover:bg-ink transition-all shadow-xl shadow-primary-dark/10 active:scale-95"
                 >
-                  <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
+                  Dashboard
                 </Link>
               ) : (
                 <>
@@ -74,11 +74,14 @@ export default function LandingPage() {
             >
               Get Started <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <button className="px-10 py-5 bg-white border border-gray-100 text-ink rounded-full font-bold text-lg hover:border-ink transition-all uppercase tracking-widest">
+              The Manifesto
+            </button>
           </motion.div>
         </div>
       </section>
 
-       {/* Features */}
+      {/* Features */}
        <section id="features" className="py-32 bg-gray-50/50 px-6 border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20">
