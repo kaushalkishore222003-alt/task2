@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle, Users, BarChart3, Zap } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
+import { cn } from "../utils/cn";
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -81,11 +82,28 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Statistics Section */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-12">
+          {[
+            { label: "Active Users", value: "2M+" },
+            { label: "Projects Managed", value: "450k" },
+            { label: "Uptime Support", value: "99.9%" },
+            { label: "Customer Rating", value: "4.9/5" }
+          ].map((stat, i) => (
+            <div key={i} className="text-center">
+              <p className="text-4xl lg:text-6xl font-black text-ink mb-2 tabular-nums">{stat.value}</p>
+              <p className="text-[10px] uppercase font-black tracking-[0.2em] text-gray-400">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Detail */}
        <section id="features" className="py-32 bg-gray-50/50 px-6 border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20">
-            <h2 className="text-4xl lg:text-6xl editorial-heading text-ink mb-6">Built for the <br/> relentless.</h2>
+            <h2 className="text-4xl lg:text-7xl editorial-heading text-ink mb-6 italic">Built for the <br/> relentless.</h2>
             <p className="text-gray-500 max-w-sm font-medium">Every tool you need to maintain momentum, styled for clarity and focus.</p>
           </div>
           
@@ -95,11 +113,11 @@ export default function LandingPage() {
               { title: "Member Sync", icon: Users, desc: "Collaborative tools that respect the individual focus." },
               { title: "Deep Insights", icon: BarChart3, desc: "Reporting that uncovers the hidden friction in your process." }
             ].map((f, i) => (
-              <div key={i} className="group">
-                <div className="w-16 h-16 bg-white border border-gray-100 rounded-3xl flex items-center justify-center mb-8 shadow-sm group-hover:shadow-lg group-hover:border-primary-light transition-all">
-                  <f.icon className="text-primary-dark w-7 h-7" />
+              <div key={i} className="group p-10 bg-white rounded-[2.5rem] border border-gray-100 hover:border-primary-dark/20 transition-all hover:shadow-2xl hover:shadow-primary-dark/5">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-primary-dark group-hover:text-white transition-all">
+                  <f.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 tracking-tight text-ink">{f.title}</h3>
+                <h3 className="text-2xl font-bold mb-3 tracking-tight text-ink">{f.title}</h3>
                 <p className="text-gray-500 leading-relaxed text-sm font-medium">{f.desc}</p>
               </div>
             ))}
@@ -107,8 +125,60 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-32 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl lg:text-7xl editorial-heading text-ink mb-6">Investment in <span className="text-gray-200 uppercase text-3xl font-sans not-italic font-black tracking-widest">Focus</span>.</h2>
+            <p className="text-gray-500 font-medium">Clear plans for teams of every scale.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { name: "Editorial", price: "$0", desc: "For solo craftsmen.", features: ["3 Active Projects", "Unlimited Tasks", "Basic Analytics"] },
+              { name: "Vanguard", price: "$12", desc: "For high-octane teams.", features: ["30 Active Projects", "Priority Support", "Advanced Analytics", "Custom Workflow"], popular: true },
+              { name: "Archive", price: "$49", desc: "For large institutions.", features: ["Unlimited Projects", "Dedicated Manager", "Enterprise Security", "SSO & SAML"] },
+            ].map((plan, i) => (
+              <div key={i} className={cn(
+                "p-10 rounded-[3rem] border transition-all relative",
+                plan.popular ? "bg-primary-dark text-white border-primary-dark shadow-2xl scale-105 z-10" : "bg-white border-gray-100 text-ink"
+              )}>
+                {plan.popular && (
+                  <span className="absolute top-0 right-10 -translate-y-1/2 bg-white text-primary-dark px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">Best Value</span>
+                )}
+                <div className="mb-10">
+                  <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">{plan.name}</h3>
+                  <p className={cn("text-xs font-medium uppercase tracking-widest", plan.popular ? "text-primary-light" : "text-gray-400")}>{plan.desc}</p>
+                </div>
+                <div className="mb-10">
+                  <span className="text-6xl font-black">{plan.price}</span>
+                  <span className={cn("text-xs font-bold uppercase ml-2", plan.popular ? "text-primary-light" : "text-gray-400")}>/ month</span>
+                </div>
+                <ul className="space-y-4 mb-12">
+                  {plan.features.map((feat, j) => (
+                    <li key={j} className="flex items-center space-x-3">
+                      <CheckCircle className={cn("w-4 h-4", plan.popular ? "text-primary-light" : "text-primary-dark")} />
+                      <span className="text-sm font-medium">{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link 
+                  to="/auth/signup"
+                  className={cn(
+                    "w-full py-5 rounded-2xl font-black uppercase tracking-widest text-xs text-center block transition-all",
+                    plan.popular ? "bg-white text-primary-dark hover:bg-primary-light" : "bg-primary-dark text-white hover:bg-ink"
+                  )}
+                >
+                  Acquire Access
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
-      <section className="py-24 px-4">
+      <section className="py-32 px-4 italic">
         <div className="max-w-7xl mx-auto bg-primary-dark rounded-[2.5rem] p-12 lg:p-24 text-center text-white relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-4xl lg:text-6xl font-bold mb-8 font-display">Ready to align your team?</h2>
