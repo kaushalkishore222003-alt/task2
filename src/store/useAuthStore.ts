@@ -8,7 +8,7 @@ interface AuthState {
   role: Role | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, role: Role) => Promise<void>;
+  login: (name: string, role: Role) => Promise<void>;
   signup: (userData: Partial<User>) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
@@ -23,23 +23,23 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       loading: false,
 
-      login: async (email, role) => {
+      login: async (name, role) => {
         set({ loading: true });
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Simulate minor processing delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
         
         const mockUser: User = {
-          id: role === 'ADMIN' ? 'admin-1' : 'member-1',
-          name: role === 'ADMIN' ? 'Admin User' : 'Team Member',
-          email: email,
+          id: `${role.toLowerCase()}-${Math.random().toString(36).substr(2, 5)}`,
+          name: name,
+          email: `${name.toLowerCase().replace(/\s+/g, '.')}@studio.io`,
           role: role,
           joinedAt: new Date().toISOString(),
-          avatar: `https://ui-avatars.com/api/?name=${role === 'ADMIN' ? 'Admin' : 'Member'}&background=064e3b&color=fff`
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=064e3b&color=fff`
         };
 
         set({
           user: mockUser,
-          token: 'mock-jwt-token',
+          token: 'simplified-session-token',
           role: role,
           isAuthenticated: true,
           loading: false,
