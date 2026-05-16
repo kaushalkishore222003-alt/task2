@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User, Role } from '../types';
+import { generateWorkspaceId } from '../utils/generateWorkspaceId';
 
 interface AuthState {
   user: User | null;
@@ -16,7 +17,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       role: null,
@@ -25,8 +26,16 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (name, role) => {
         set({ loading: true });
-        // Simulate minor processing delay
         await new Promise((resolve) => setTimeout(resolve, 500));
+
+        let workspaceId = generateWorkspaceId();
+        // Specifically check for mock admin/member as per requirements
+        const lowerName = name.toLowerCase();
+        if (role === 'ADMIN' && (lowerName === 'admin' || lowerName === 'admin@gmail.com')) {
+          workspaceId = 'WS-ADMIN01';
+        } else if (role === 'MEMBER' && (lowerName === 'member' || lowerName === 'member@gmail.com')) {
+          workspaceId = 'WS-MEMBER01';
+        }
         
         const mockUser: User = {
           id: `${role.toLowerCase()}-${Math.random().toString(36).substr(2, 5)}`,
@@ -34,7 +43,8 @@ export const useAuthStore = create<AuthState>()(
           email: `${name.toLowerCase().replace(/\s+/g, '.')}@studio.io`,
           role: role,
           joinedAt: new Date().toISOString(),
-          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=064e3b&color=fff`
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=064e3b&color=fff`,
+          workspaceId: workspaceId
         };
 
         set({
@@ -56,7 +66,8 @@ export const useAuthStore = create<AuthState>()(
           email: userData.email || '',
           role: userData.role || 'MEMBER',
           joinedAt: new Date().toISOString(),
-          avatar: `https://ui-avatars.com/api/?name=${userData.name}&background=064e3b&color=fff`
+          avatar: `https://ui-avatars.com/api/?name=${userData.name}&background=064e3b&color=fff`,
+          workspaceId: generateWorkspaceId()
         };
 
         set({
@@ -78,10 +89,21 @@ export const useAuthStore = create<AuthState>()(
         localStorage.removeItem('auth-storage');
       },
 
-      setUser: (user) => set({ user, isAuthenticated: !!user, role: user?.role || null }),
+      setUser: (user) => {
+        if (user && !user.workspaceId) {
+          user.workspaceId = generateWorkspaceId();
+        }
+        set({ user, isAuthenticated: !!user, role: user?.role || null });
+      },
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        // Enforce workspaceId on rehydration for legacy sessions
+        if (state?.user && !state.user.workspaceId) {
+          state.user.workspaceId = generateWorkspaceId();
+        }
+      }
     }
   )
 );

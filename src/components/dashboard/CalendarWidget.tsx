@@ -37,51 +37,52 @@ export const CalendarWidget = () => {
   ];
 
   return (
-    <div className="card-base p-8 rounded-[2.5rem] bg-ink text-white shadow-2xl relative overflow-hidden h-full">
-      <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary-dark/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="card-premium p-6 relative overflow-hidden h-full">
+      <div className="absolute -top-12 -right-12 w-48 h-48 bg-accent-primary/10 rounded-full blur-3xl pointer-events-none" />
       
       <div className="relative z-10 space-y-6">
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
-          <h4 className="text-xl font-bold italic">{format(currentMonth, 'MMMM yyyy')}</h4>
-          <div className="flex gap-2">
-            <button onClick={prevMonth} className="p-2 hover:bg-white/10 rounded-xl transition-colors"><ChevronLeft size={16} /></button>
-            <button onClick={nextMonth} className="p-2 hover:bg-white/10 rounded-xl transition-colors"><ChevronRight size={16} /></button>
+        <div className="flex items-center justify-between pb-4 border-b border-white/[0.05]">
+          <h4 className="text-lg font-display font-bold text-text-primary">{format(currentMonth, 'MMMM yyyy')}</h4>
+          <div className="flex gap-1">
+            <button onClick={prevMonth} className="p-1.5 hover:bg-white/[0.05] rounded-lg transition-colors text-text-secondary"><ChevronLeft size={16} /></button>
+            <button onClick={nextMonth} className="p-1.5 hover:bg-white/[0.05] rounded-lg transition-colors text-text-secondary"><ChevronRight size={16} /></button>
           </div>
         </div>
 
         <div className="grid grid-cols-7 gap-1">
           {dayLabels.map(label => (
-            <div key={label} className="text-center text-[10px] font-black uppercase text-white/30 py-2">
+            <div key={label} className="text-center text-[10px] font-black uppercase text-text-secondary/40 py-2">
               {label}
             </div>
           ))}
           {days.map((day, idx) => {
             const hasEvent = events.some(e => isSameDay(e.date, day));
+            const isToday = isSameDay(day, selectedDate);
             return (
               <div 
                 key={idx} 
                 className={cn(
-                  "aspect-square flex flex-col items-center justify-center rounded-xl text-[11px] font-bold transition-all relative cursor-pointer",
-                  !isSameMonth(day, monthStart) ? "text-white/10" : "text-white/80 hover:bg-white/5",
-                  isSameDay(day, selectedDate) && "bg-primary-dark text-white shadow-lg shadow-primary-dark/50"
+                  "aspect-square flex flex-col items-center justify-center rounded-lg text-[11px] font-bold transition-all relative cursor-pointer",
+                  !isSameMonth(day, monthStart) ? "text-text-secondary/10" : "text-text-primary/70 hover:bg-white/[0.05]",
+                  isToday && "bg-accent-primary text-bg-main shadow-glow font-black"
                 )}
               >
                 {format(day, 'd')}
-                {hasEvent && !isSameDay(day, selectedDate) && (
-                  <div className="absolute bottom-1.5 w-1 h-1 bg-primary-light rounded-full" />
+                {hasEvent && !isToday && (
+                  <div className="absolute bottom-1.5 w-1 h-1 bg-accent-primary rounded-full shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
                 )}
               </div>
             );
           })}
         </div>
 
-        <div className="space-y-4 pt-4 border-t border-white/10">
-           <p className="text-[10px] font-black uppercase tracking-widest text-primary-light/40">Agenda for Today</p>
-           <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                 <div className="w-1.5 h-1.5 rounded-full bg-primary-light shadow-[0_0_8px_rgba(209,250,229,0.5)]" />
-                 <span className="text-xs font-bold">Release v2.0 Production</span>
-                 <span className="text-[8px] font-black bg-white/10 px-2 py-0.5 rounded ml-auto">14:00</span>
+        <div className="space-y-4 pt-4 border-t border-white/[0.05]">
+           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/40">Today's Agenda</p>
+           <div className="space-y-1">
+              <div className="flex items-center gap-3 p-2 hover:bg-white/[0.02] rounded-lg transition-colors group">
+                 <div className="w-1.5 h-1.5 rounded-full bg-accent-primary shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                 <span className="text-xs font-semibold text-text-primary/90 group-hover:text-accent-primary transition-colors">Release v2.0 Platform</span>
+                 <span className="text-[8px] font-black border border-white/10 px-1.5 py-0.5 rounded text-text-secondary ml-auto">14:00</span>
               </div>
            </div>
         </div>

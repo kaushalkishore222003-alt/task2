@@ -27,25 +27,25 @@ export default function LoginPage() {
   return (
     <div className="space-y-12">
       <div className="text-center space-y-4">
-        <h2 className="text-5xl editorial-heading text-ink">Enter Workspace.</h2>
-        <p className="text-sm text-gray-400 font-medium max-w-sm mx-auto">No password required. Specify your identity and select your permissions tier.</p>
+        <h2 className="text-4xl font-display font-bold text-text-primary tracking-tight">Establish Identity<span className="text-accent-primary">.</span></h2>
+        <p className="text-xs text-text-secondary font-medium max-w-xs mx-auto opacity-60">No password required. Specify your name and select your permissions tier.</p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-100 text-red-600 px-6 py-4 rounded-3xl text-xs font-bold text-center">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-center">
           {error}
         </div>
       )}
 
       <div className="space-y-8">
         <div className="group">
-          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 ml-2">Display Name</label>
+          <label className="block text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] mb-3 ml-2 opacity-50">Legal Name</label>
           <input 
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="block w-full bg-gray-50 border-none rounded-[2rem] px-8 py-6 text-lg font-medium text-ink placeholder-gray-300 focus:ring-4 focus:ring-primary-dark/5 focus:bg-white transition-all outline-none text-center"
-            placeholder="Your Full Name"
+            className="input-premium py-5 text-center text-xl font-display"
+            placeholder="Your Display Name"
           />
         </div>
 
@@ -53,34 +53,34 @@ export default function LoginPage() {
           <button 
             disabled={loading}
             onClick={() => handleLogin('ADMIN')}
-            className="flex flex-col items-center justify-center p-8 bg-ink text-white rounded-[2.5rem] group hover:bg-primary-dark transition-all shadow-2xl shadow-ink/20 active:scale-[0.98]"
+            className="flex flex-col items-center justify-center p-8 bg-white/[0.03] border border-white/5 text-text-primary rounded-3xl group hover:border-accent-primary/40 hover:bg-white/[0.05] transition-all duration-500 active:scale-[0.98]"
           >
-            <Shield className="mb-4 opacity-40 group-hover:opacity-100 transition-all group-hover:scale-110" size={32} />
-            <span className="text-[11px] font-black uppercase tracking-widest">Login as Admin</span>
-            <span className="text-[9px] font-medium opacity-40 mt-1">Full Management Control</span>
+            <Shield className="mb-4 text-accent-primary opacity-40 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110 group-hover:shadow-accent" size={28} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Admin Node</span>
+            <span className="text-[9px] font-medium opacity-40 mt-1">Full Portfolio Control</span>
           </button>
 
           <button 
             disabled={loading}
             onClick={() => handleLogin('MEMBER')}
-            className="flex flex-col items-center justify-center p-8 bg-white border-2 border-gray-100 text-ink rounded-[2.5rem] group hover:border-primary-dark transition-all active:scale-[0.98]"
+            className="flex flex-col items-center justify-center p-8 bg-white/[0.02] border border-white/5 text-text-primary rounded-3xl group hover:border-text-secondary/20 transition-all active:scale-[0.98]"
           >
-            <UserIcon className="mb-4 text-gray-300 group-hover:text-primary-dark transition-all group-hover:scale-110" size={32} />
-            <span className="text-[11px] font-black uppercase tracking-widest">Login as Member</span>
-            <span className="text-[9px] font-medium text-gray-400 mt-1">Collaborator Access</span>
+            <UserIcon className="mb-4 text-text-secondary opacity-40 group-hover:opacity-100 transition-all group-hover:scale-110" size={28} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Member Node</span>
+            <span className="text-[9px] font-medium opacity-40 mt-1">Collaborator Access</span>
           </button>
         </div>
 
         {loading && (
           <div className="flex justify-center">
-             <Loader2 className="animate-spin text-primary-dark" size={32} />
+             <Loader2 className="animate-spin text-accent-primary" size={24} />
           </div>
         )}
       </div>
 
       <div className="text-center">
-        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-           Protected by local persistence
+        <p className="text-[9px] text-text-secondary font-bold uppercase tracking-[0.3em] opacity-30">
+           Protected by local encryption protocols
         </p>
       </div>
     </div>

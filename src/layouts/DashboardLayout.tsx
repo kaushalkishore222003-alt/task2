@@ -54,73 +54,102 @@ export default function DashboardLayout() {
   const filteredNav = navigationItems.filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
-    <div className={cn("min-h-screen flex selection:bg-primary-light transition-colors duration-500", isDark ? "bg-ink text-white" : "bg-white text-ink")}>
+    <div className="min-h-screen bg-bg-main flex selection:bg-accent-primary/30">
       {/* Sidebar for Desktop */}
-      <div className={cn(
-        "hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 border-r",
-        isDark ? "bg-ink border-white/5" : "bg-white border-gray-100"
-      )}>
-        <div className="flex flex-col flex-grow pt-8 pb-4 overflow-y-auto">
-          <div className="flex items-center justify-between px-8 mb-12">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary-dark rounded-xl flex items-center justify-center shadow-lg shadow-primary-dark/20">
-                 <div className="w-5 h-5 bg-white rounded-sm rotate-45" />
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-white/[0.05] bg-bg-main">
+        <div className="flex flex-col flex-grow pt-8 pb-4 overflow-y-auto scrollbar-hide">
+          <div className="px-8 mb-10">
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center shadow-lg shadow-accent-primary/20 group-hover:scale-110 transition-transform duration-300">
+                 <div className="w-4 h-4 bg-bg-main rounded-sm rotate-45" />
               </div>
-              <span className={cn("text-2xl font-bold tracking-tighter", isDark ? "text-white" : "text-primary-dark font-black")}>Syncro.</span>
+              <span className="text-xl font-display font-bold tracking-tighter text-text-primary">Syncro<span className="text-accent-primary">.</span></span>
             </Link>
           </div>
 
-          <nav className="flex-1 px-6 space-y-1">
-            {filteredNav.map((item) => {
+          <nav className="flex-1 px-4 space-y-1">
+            <div className="px-4 mb-4">
+              <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] opacity-50">Main Workspace</p>
+            </div>
+            {filteredNav.map((item, i) => {
               const active = location.pathname === item.href || (item.href !== '/dashboard' && location.pathname.startsWith(item.href));
               return (
-                <Link
+                <motion.div
                   key={item.name}
-                  to={item.href}
-                  className={cn(
-                    active 
-                      ? (isDark ? 'bg-white/5 text-primary-light' : 'bg-primary-light text-primary-dark font-semibold')
-                      : 'text-gray-400 hover:text-ink',
-                    'group flex items-center px-4 py-3 text-sm rounded-2xl transition-all duration-300'
-                  )}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
                 >
-                  <item.icon className={cn(active ? 'text-primary-dark' : 'text-gray-300 group-hover:text-gray-500', 'mr-3 h-5 w-5 transition-colors')} />
-                  {item.name}
-                </Link>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "group flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden",
+                      active 
+                        ? 'bg-accent-soft text-accent-primary' 
+                        : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.03]'
+                    )}
+                  >
+                    {active && (
+                      <motion.div 
+                        layoutId="sidebar-active"
+                        className="absolute left-0 w-1 h-1/2 bg-accent-primary rounded-r-full"
+                      />
+                    )}
+                    <item.icon className={cn(
+                      'mr-3 h-4 w-4 transition-all duration-300',
+                      active ? 'text-accent-primary scale-110' : 'opacity-50 group-hover:opacity-100'
+                    )} />
+                    {item.name}
+                  </Link>
+                </motion.div>
+              );
+            })}
+
+            <div className="px-4 mt-10 mb-4">
+              <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] opacity-50">Utilities</p>
+            </div>
+            {secondaryItems.map((item, i) => {
+              const active = location.pathname === item.href;
+              return (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (filteredNav.length + i) * 0.05 }}
+                >
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "group flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-300",
+                      active 
+                        ? 'bg-white/[0.05] text-text-primary' 
+                        : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.03]'
+                    )}
+                  >
+                    <item.icon className="mr-3 h-4 w-4 opacity-50 group-hover:opacity-100" />
+                    {item.name}
+                  </Link>
+                </motion.div>
               );
             })}
           </nav>
           
-          <div className="mt-auto px-6 pt-4 space-y-6">
-            {/* Theme Toggle */}
-            <button 
-              onClick={() => setIsDark(!isDark)}
-              className={cn(
-                "w-full flex items-center justify-between px-6 py-3 rounded-2xl border transition-all",
-                isDark ? "bg-white/5 border-white/10 text-white" : "bg-gray-50 border-gray-100 text-gray-500"
-              )}
-            >
-              <div className="flex items-center gap-3">
-                 {isDark ? <Moon size={16} /> : <Sun size={16} />}
-                 <span className="text-[10px] font-black uppercase tracking-widest">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
-              </div>
-              <div className={cn("w-8 h-4 rounded-full relative transition-all", isDark ? "bg-primary-dark" : "bg-gray-200")}>
-                 <div className={cn("absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all", isDark ? "right-0.5" : "left-0.5")} />
-              </div>
-            </button>
-
-            <div className={cn("p-4 rounded-2xl border mb-6", isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-100")}>
+          <div className="mt-auto px-4 space-y-4">
+            <div className="p-4 rounded-2xl border border-white/[0.05] bg-white/[0.02] shadow-sm">
               <div className="flex items-center space-x-3">
-                <img 
-                  src={user?.avatar || `https://i.pravatar.cc/100?u=${user?.email}`} 
-                  className="h-10 w-10 rounded-full bg-gray-200 border-2 border-white shadow-sm" 
-                  alt={user?.name}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-bold truncate", isDark ? "text-white" : "text-ink")}>{user?.name}</p>
-                  <p className="text-[10px] text-gray-500 font-medium uppercase">{user?.role} Access</p>
+                <div className="relative">
+                  <img 
+                    src={user?.avatar || `https://i.pravatar.cc/100?u=${user?.email}`} 
+                    className="h-9 w-9 rounded-full bg-slate-800 border-2 border-white/[0.05]" 
+                    alt={user?.name}
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-accent-primary border-2 border-bg-main rounded-full" />
                 </div>
-                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-text-primary truncate">{user?.name}</p>
+                  <p className="text-[9px] text-text-secondary font-black uppercase tracking-widest">{user?.role}</p>
+                </div>
+                <button onClick={handleLogout} className="text-text-secondary hover:text-red-400 transition-colors">
                    <LogOut size={16} />
                 </button>
               </div>
@@ -130,64 +159,60 @@ export default function DashboardLayout() {
       </div>
 
       {/* Main Content Area */}
-      <div className="md:pl-72 flex flex-col flex-1">
+      <div className="md:pl-64 flex flex-col flex-1">
         {/* Top Header */}
-        <header className={cn(
-          "h-24 px-10 border-b flex items-center justify-between sticky top-0 backdrop-blur-xl z-20 transition-colors",
-          isDark ? "bg-ink/80 border-white/5" : "bg-white/80 border-gray-100"
-        )}>
+        <header className="h-20 px-8 border-b border-white/[0.05] flex items-center justify-between sticky top-0 bg-bg-main/80 backdrop-blur-xl z-20">
           <div className="flex items-center">
             <button
               type="button"
-              className="mr-4 text-gray-400 md:hidden"
+              className="mr-4 text-text-secondary md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-6 w-6" />
             </button>
             <div className="flex flex-col">
-               <h1 className={cn("text-3xl editorial-heading capitalize", isDark ? "text-white" : "text-ink")}>
-                 {location.pathname.split('/').pop()?.replace('-', ' ') || 'Overview.'}
+               <h1 className="text-xl font-display font-bold text-text-primary capitalize tracking-tight">
+                 {location.pathname.split('/').pop()?.replace('-', ' ') || 'Overview'}
                </h1>
-               <p className="text-[11px] text-gray-400 font-medium tracking-wide">
-                 {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-               </p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-6">
-            <div className="relative hidden lg:block">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-300" />
+          <div className="flex items-center space-x-4">
+            <div className="relative hidden lg:block group">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-text-secondary group-focus-within:text-accent-primary transition-colors" />
               </div>
               <input
-                className={cn(
-                  "block w-64 border-none rounded-full pl-10 pr-4 py-2.5 text-sm outline-none transition-all",
-                  isDark ? "bg-white/5 text-white placeholder-white/20 focus:bg-white/10" : "bg-gray-50 text-ink placeholder-gray-400 focus:bg-white focus:ring-4 focus:ring-gray-100"
-                )}
-                placeholder="Synchronize search..."
+                className="block w-64 bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2 text-sm text-text-primary placeholder-text-secondary focus:bg-white/[0.05] focus:border-accent-primary/30 transition-all outline-none"
+                placeholder="Search..."
                 type="search"
               />
             </div>
             
-            <button className="relative p-2.5 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-ink">
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-primary-dark border-2 border-white rounded-full"></span>
-            </button>
+            <div className="flex items-center gap-1">
+               <button className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/[0.05] transition-all relative">
+                 <Bell size={20} />
+                 <span className="absolute top-2 right-2 w-2 h-2 bg-accent-primary rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+               </button>
+               <button className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/[0.05] transition-all">
+                 <Settings size={20} />
+               </button>
+            </div>
           </div>
         </header>
 
-        <main className="flex-1 p-10 pt-8 overflow-y-auto">
+        <main className="flex-1 p-8 overflow-y-auto scrollbar-hide">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
               <Suspense fallback={
                 <div className="flex items-center justify-center p-20">
-                   <div className="w-12 h-12 border-4 border-gray-100 border-t-primary-dark rounded-full animate-spin" />
+                   <div className="w-10 h-10 border-2 border-white/10 border-t-accent-primary rounded-full animate-spin" />
                 </div>
               }>
                 <Outlet />
@@ -205,7 +230,7 @@ export default function DashboardLayout() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-ink/80 backdrop-blur-sm z-40 md:hidden" 
+              className="fixed inset-0 bg-bg-main/80 backdrop-blur-md z-40 md:hidden" 
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div 
@@ -213,45 +238,30 @@ export default function DashboardLayout() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className={cn("fixed inset-y-0 left-0 flex flex-col max-w-xs w-full shadow-2xl z-50 md:hidden", isDark ? "bg-ink" : "bg-white")}
+              className="fixed inset-y-0 left-0 flex flex-col max-w-xs w-full shadow-2xl z-50 md:hidden bg-bg-main border-r border-white/[0.05]"
             >
-              <div className="absolute top-4 right-4 focus:outline-none">
-                <button onClick={() => setSidebarOpen(false)} className="p-2 text-gray-400 hover:text-ink"><X size={24} /></button>
+              <div className="p-6 flex items-center justify-between">
+                <span className="text-xl font-display font-bold tracking-tighter text-text-primary">Syncro<span className="text-accent-primary">.</span></span>
+                <button onClick={() => setSidebarOpen(false)} className="p-2 text-text-secondary hover:text-text-primary"><X size={20} /></button>
               </div>
-              <div className="flex-1 h-0 pt-8 pb-4 overflow-y-auto">
-                 <div className="px-8 mb-12">
-                    <span className="text-2xl font-black tracking-tighter text-primary-dark">Syncro.</span>
-                 </div>
-                 <nav className="px-6 space-y-1">
+              <div className="flex-1 h-0 pt-2 pb-4 overflow-y-auto">
+                 <nav className="px-4 space-y-1">
                    {filteredNav.map((item) => (
                      <Link
                        key={item.name}
                        to={item.href}
                        onClick={() => setSidebarOpen(false)}
                        className={cn(
+                         "group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all",
                          location.pathname === item.href
-                           ? 'bg-primary-dark text-white'
-                           : 'text-gray-600 hover:bg-gray-50',
-                         'group flex items-center px-4 py-3 text-base font-medium rounded-2xl transition-all'
+                           ? 'bg-accent-soft text-accent-primary'
+                           : 'text-text-secondary hover:bg-white/[0.03]'
                        )}
                      >
-                       <item.icon className="mr-4 h-6 w-6" />
+                       <item.icon className="mr-3 h-5 w-5" />
                        {item.name}
                      </Link>
                    ))}
-                   <div className="pt-8 space-y-1">
-                      {secondaryItems.map(item => (
-                        <Link
-                          key={item.name}
-                          to={item.href}
-                          onClick={() => setSidebarOpen(false)}
-                          className="flex items-center px-4 py-2 text-sm font-bold text-gray-400 hover:text-ink"
-                        >
-                          <item.icon className="mr-4 h-5 w-5 opacity-50" />
-                          {item.name}
-                        </Link>
-                      ))}
-                   </div>
                  </nav>
               </div>
             </motion.div>

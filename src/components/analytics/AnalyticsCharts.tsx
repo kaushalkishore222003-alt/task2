@@ -30,34 +30,42 @@ const pieData = [
   { name: 'Marketing', value: 200 },
 ];
 
-const COLORS = ['#064e3b', '#10b981', '#34d399', '#6ee7b7'];
+const COLORS = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0'];
 
 export const ProductivityChart = () => (
   <ResponsiveContainer width="100%" height={300}>
     <AreaChart data={data}>
       <defs>
         <linearGradient id="colorComp" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#064e3b" stopOpacity={0.3}/>
-          <stop offset="95%" stopColor="#064e3b" stopOpacity={0}/>
+          <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
+          <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
         </linearGradient>
       </defs>
-      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
       <XAxis 
         dataKey="name" 
         axisLine={false} 
         tickLine={false} 
-        tick={{ fontSize: 10, fontWeight: 900, fill: '#9ca3af' }}
+        tick={{ fontSize: 10, fontWeight: 700, fill: '#94A3B8' }}
         dy={10}
       />
       <YAxis 
         axisLine={false} 
         tickLine={false} 
-        tick={{ fontSize: 10, fontWeight: 900, fill: '#9ca3af' }}
+        tick={{ fontSize: 10, fontWeight: 700, fill: '#94A3B8' }}
       />
       <Tooltip 
-        contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
+        contentStyle={{ 
+          backgroundColor: '#1E293B', 
+          borderRadius: '0.75rem', 
+          border: '1px solid rgba(255,255,255,0.1)', 
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)', 
+          fontSize: '12px',
+          color: '#F8FAFC'
+        }}
+        itemStyle={{ color: '#F8FAFC' }}
       />
-      <Area type="monotone" dataKey="completed" stroke="#064e3b" strokeWidth={3} fillOpacity={1} fill="url(#colorComp)" />
+      <Area type="monotone" dataKey="completed" stroke="#10B981" strokeWidth={2} fillOpacity={1} fill="url(#colorComp)" />
     </AreaChart>
   </ResponsiveContainer>
 );
@@ -65,25 +73,32 @@ export const ProductivityChart = () => (
 export const ComparisonChart = () => (
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={data}>
-      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
       <XAxis 
         dataKey="name" 
         axisLine={false} 
         tickLine={false} 
-        tick={{ fontSize: 10, fontWeight: 900, fill: '#9ca3af' }}
+        tick={{ fontSize: 10, fontWeight: 700, fill: '#94A3B8' }}
         dy={10}
       />
       <YAxis 
         axisLine={false} 
         tickLine={false} 
-        tick={{ fontSize: 10, fontWeight: 900, fill: '#9ca3af' }}
+        tick={{ fontSize: 10, fontWeight: 700, fill: '#94A3B8' }}
       />
       <Tooltip 
-        cursor={{ fill: '#f9fafb' }}
-        contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
+        cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+        contentStyle={{ 
+          backgroundColor: '#1E293B', 
+          borderRadius: '0.75rem', 
+          border: '1px solid rgba(255,255,255,0.1)', 
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)', 
+          fontSize: '12px'
+        }}
+        itemStyle={{ color: '#F8FAFC' }}
       />
-      <Bar dataKey="completed" fill="#064e3b" radius={[4, 4, 0, 0]} barSize={20} />
-      <Bar dataKey="pending" fill="#d1fae5" radius={[4, 4, 0, 0]} barSize={20} />
+      <Bar dataKey="completed" fill="#10B981" radius={[4, 4, 0, 0]} barSize={16} />
+      <Bar dataKey="pending" fill="rgba(16, 185, 129, 0.2)" radius={[4, 4, 0, 0]} barSize={16} />
     </BarChart>
   </ResponsiveContainer>
 );
@@ -97,15 +112,23 @@ export const DistributionChart = () => (
         cy="50%"
         innerRadius={60}
         outerRadius={80}
-        paddingAngle={5}
+        paddingAngle={8}
         dataKey="value"
+        stroke="none"
       >
         {pieData.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
       <Tooltip 
-        contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
+        contentStyle={{ 
+          backgroundColor: '#1E293B', 
+          borderRadius: '0.75rem', 
+          border: '1px solid rgba(255,255,255,0.1)', 
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)', 
+          fontSize: '12px'
+        }}
+        itemStyle={{ color: '#F8FAFC' }}
       />
     </PieChart>
   </ResponsiveContainer>

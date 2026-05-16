@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Filter, Grid, List as ListIcon, Plus, MoreVertical, Layout, Clock, Tag } from 'lucide-react';
 import { cn } from '../../utils/cn';
-
-const PROJECTS = [
-  { id: 1, name: 'Fintech Rebrand 2024', category: 'Branding', status: 'In Progress', progress: 74, team: ['AL', 'SJ', 'MK'], deadline: 'Oct 24', priority: 'High' },
-  { id: 2, name: 'Internal API Refactor', category: 'Engineering', status: 'Review', progress: 92, team: ['SJ', 'MK'], deadline: 'Sep 12', priority: 'Medium' },
-  { id: 3, name: 'Q3 Product Roadmap', category: 'Strategy', status: 'Completed', progress: 100, team: ['AL', 'SJ'], deadline: 'Aug 30', priority: 'High' },
-  { id: 4, name: 'Eco-Living Campaign', category: 'Marketing', status: 'Planning', progress: 15, team: ['MK', 'AL'], deadline: 'Dec 05', priority: 'Low' },
-  { id: 5, name: 'Mobile App 2.0', category: 'Product', status: 'In Progress', progress: 45, team: ['SJ', 'MK', 'AL'], deadline: 'Nov 18', priority: 'High' },
-];
+import { PROJECTS } from '../../data/constants';
 
 export default function ProjectsPage() {
   const [view, setView] = useState<'grid' | 'list'>('grid');
@@ -21,49 +14,49 @@ export default function ProjectsPage() {
   );
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12 pb-24">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-4">
-          <h1 className="text-5xl editorial-heading text-ink">Project Library.</h1>
-          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-400">
-            <span className="flex items-center gap-1.5"><Layout size={12} className="text-primary-dark" /> Total Workspace</span>
-            <span className="w-1 h-1 bg-gray-200 rounded-full" />
-            <span className="text-ink">24 Managed</span>
+        <div className="space-y-2">
+          <h1 className="text-4xl font-display font-bold text-text-primary tracking-tight">Active Projects<span className="text-accent-primary">.</span></h1>
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">
+            <span className="flex items-center gap-1.5"><Layout size={14} className="text-accent-primary" /> Global Portfolio</span>
+            <span className="w-1 h-1 bg-white/10 rounded-full" />
+            <span className="text-text-primary/70">24 Nodes Active</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-           <button className="p-3 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-ink hover:border-ink transition-all">
-             <Filter size={18} />
+        <div className="flex items-center gap-3">
+           <button className="btn-secondary p-2.5 rounded-xl text-text-secondary">
+             <Filter size={20} />
            </button>
-           <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
+           <div className="flex bg-white/[0.02] p-1 rounded-xl border border-white/5">
               <button 
                 onClick={() => setView('grid')}
-                className={cn("p-2 px-3 rounded-lg transition-all", view === 'grid' ? "bg-white shadow-sm text-primary-dark" : "text-gray-400 hover:text-gray-600")}
+                className={cn("p-2 px-3 rounded-lg transition-all", view === 'grid' ? "bg-white/[0.05] text-accent-primary shadow-sm ring-1 ring-white/10" : "text-text-secondary hover:text-text-primary")}
               >
                 <Grid size={18} />
               </button>
               <button 
                 onClick={() => setView('list')}
-                className={cn("p-2 px-3 rounded-lg transition-all", view === 'list' ? "bg-white shadow-sm text-primary-dark" : "text-gray-400 hover:text-gray-600")}
+                className={cn("p-2 px-3 rounded-lg transition-all", view === 'list' ? "bg-white/[0.05] text-accent-primary shadow-sm ring-1 ring-white/10" : "text-text-secondary hover:text-text-primary")}
               >
                 <ListIcon size={18} />
               </button>
            </div>
-           <button className="flex items-center gap-2 px-6 py-3.5 bg-primary-dark text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-ink shadow-xl shadow-primary-dark/20 transition-all">
-             <Plus size={16} /> New Project
+           <button className="btn-primary px-6 py-3 text-xs tracking-widest">
+             <Plus size={18} className="mr-2" /> New Project
            </button>
         </div>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={20} />
+      <div className="relative group max-w-xl">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-accent-primary transition-colors transition-all" size={16} />
         <input 
           type="text" 
-          placeholder="Search by keyword, client, or category..."
+          placeholder="Search projects..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-gray-50 border-none rounded-[2rem] py-6 pl-16 pr-8 text-sm focus:ring-2 focus:ring-primary-dark/10 focus:bg-white transition-all outline-none placeholder-gray-300 font-medium"
+          className="input-premium pl-11 py-3 text-xs"
         />
       </div>
 
@@ -74,7 +67,7 @@ export default function ProjectsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filteredProjects.map((project, i) => (
               <motion.div 
@@ -82,39 +75,39 @@ export default function ProjectsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="card-base p-8 rounded-[2.5rem] group hover:border-primary-dark/20 hover:shadow-2xl hover:shadow-primary-dark/5 flex flex-col h-full bg-white transition-all"
+                className="card-premium p-8 group flex flex-col h-full hover:border-accent-primary/20 transition-all duration-500"
               >
                 <div className="flex justify-between items-start mb-10">
                   <div className={cn(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                    project.status === 'Completed' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                    project.status === 'Review' ? "bg-amber-50 text-amber-600 border-amber-100" :
-                    "bg-gray-50 text-gray-400 border-gray-100"
+                    "px-3 py-1 rounded-md text-[8px] font-black uppercase tracking-[0.2em] border transition-colors",
+                    project.status === 'Completed' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                    project.status === 'Review' ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
+                    "bg-white/5 text-text-secondary/60 border-white/10"
                   )}>
                     {project.status}
                   </div>
-                  <button className="text-gray-300 hover:text-ink transition-colors p-1">
-                    <MoreVertical size={20} />
+                  <button className="text-text-secondary/30 hover:text-text-primary transition-colors p-1">
+                    <MoreVertical size={18} />
                   </button>
                 </div>
 
                 <div className="flex-1 space-y-3 mb-10">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-dark/40 italic">{project.category}</span>
+                  <div>
+                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent-primary opacity-50">{project.category}</span>
                   </div>
-                  <h3 className="text-3xl font-black tracking-tighter text-ink group-hover:text-primary-dark transition-colors leading-tight italic">
+                  <h3 className="text-2xl font-display font-bold text-text-primary group-hover:text-accent-primary transition-colors leading-tight tracking-tight">
                     {project.name}
                   </h3>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                <div className="space-y-6 pt-6 border-t border-white/[0.04]">
+                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.15em] text-text-secondary/40">
                     <span className="flex items-center gap-2">
-                       <Clock size={12} /> {project.deadline}
+                       <Clock size={12} className="text-accent-primary/60" /> {project.deadline}
                     </span>
-                    <div className="flex -space-x-2">
+                    <div className="flex -space-x-1.5">
                       {project.team.map((t, idx) => (
-                        <div key={idx} className="w-7 h-7 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-black ring-1 ring-gray-100">
+                        <div key={idx} className="w-6 h-6 rounded-lg bg-white/[0.03] border border-white/10 flex items-center justify-center text-[8px] font-black text-text-primary shadow-sm ring-2 ring-bg-card">
                            {t}
                         </div>
                       ))}
@@ -122,12 +115,12 @@ export default function ProjectsPage() {
                   </div>
                   
                   <div className="space-y-2.5">
-                    <div className="flex items-center justify-between text-[10px] font-black uppercase text-gray-400 tracking-widest">
-                       <span>Velocity</span>
-                       <span className="text-ink">{project.progress}%</span>
+                    <div className="flex items-center justify-between text-[9px] font-black uppercase text-text-secondary tracking-[0.2em]">
+                       <span className="opacity-40">Burn Rate Index</span>
+                       <span className="text-accent-primary">{project.progress}%</span>
                     </div>
-                    <div className="w-full bg-gray-50 h-1.5 rounded-full overflow-hidden p-0.5">
-                      <div className="h-full bg-primary-dark rounded-full transition-all duration-1000" style={{ width: `${project.progress}%` }}></div>
+                    <div className="w-full bg-white/[0.05] h-1.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                      <div className="h-full bg-accent-primary rounded-full transition-all duration-1000 shadow-glow" style={{ width: `${project.progress}%` }}></div>
                     </div>
                   </div>
                 </div>
@@ -140,52 +133,52 @@ export default function ProjectsPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="card-base rounded-[2rem] overflow-hidden"
+            className="card-premium overflow-hidden shadow-glow-soft"
           >
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Project</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Category</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Status</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Progress</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Deadline</th>
+                <tr className="bg-white/[0.02] border-b border-white/[0.05]">
+                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Portfolio Node</th>
+                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Segment</th>
+                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Status</th>
+                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Burn Index</th>
+                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60 text-right">Deadline</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-white/[0.04]">
                 {filteredProjects.map((project) => (
-                  <tr key={project.id} className="hover:bg-gray-50/30 transition-colors group">
+                  <tr key={project.id} className="hover:bg-white/[0.02] transition-colors group">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-primary-dark font-black text-sm group-hover:bg-primary-dark group-hover:text-white transition-all">
+                        <div className="w-10 h-10 bg-white/[0.03] border border-white/10 rounded-xl flex items-center justify-center text-accent-primary font-black text-xs group-hover:bg-accent-primary group-hover:text-bg-main transition-all">
                           {project.name[0]}
                         </div>
-                        <span className="font-bold text-ink underline-offset-4 group-hover:underline">{project.name}</span>
+                        <span className="font-bold text-text-primary group-hover:text-accent-primary transition-colors text-sm">{project.name}</span>
                       </div>
                     </td>
                     <td className="px-8 py-6">
-                      <span className="text-xs font-bold text-gray-500">{project.category}</span>
+                      <span className="text-xs font-semibold text-text-secondary/60">{project.category}</span>
                     </td>
                     <td className="px-8 py-6">
                        <span className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
-                          project.status === 'Completed' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                          project.status === 'Review' ? "bg-amber-50 text-amber-600 border-amber-100" :
-                          "bg-gray-50 text-gray-400 border-gray-100"
+                          "px-2.5 py-1 rounded-md text-[8px] font-black uppercase tracking-[0.1em] border transition-colors",
+                          project.status === 'Completed' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                          project.status === 'Review' ? "bg-amber-500/10 text-amber-400 border-amber-500/20" :
+                          "bg-white/5 text-text-secondary/60 border-white/10"
                         )}>
                           {project.status}
                         </span>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-3">
-                         <div className="w-24 bg-gray-100 h-1 rounded-full overflow-hidden">
-                           <div className="h-full bg-primary-dark rounded-full" style={{ width: `${project.progress}%` }}></div>
+                         <div className="w-32 bg-white/[0.05] h-1.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                           <div className="h-full bg-accent-primary rounded-full shadow-glow" style={{ width: `${project.progress}%` }}></div>
                          </div>
-                         <span className="text-xs font-black text-ink">{project.progress}%</span>
+                         <span className="text-xs font-bold text-text-primary/70">{project.progress}%</span>
                       </div>
                     </td>
                     <td className="px-8 py-6 text-right">
-                      <span className="text-xs font-bold text-gray-400">{project.deadline}</span>
+                      <span className="text-[10px] font-bold text-text-secondary/60 uppercase tracking-widest">{project.deadline}</span>
                     </td>
                   </tr>
                 ))}

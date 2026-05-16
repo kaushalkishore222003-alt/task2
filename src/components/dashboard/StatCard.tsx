@@ -16,27 +16,28 @@ export const StatCard = ({ label, value, change, trend, icon: Icon, description,
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={cn("card-base p-8 rounded-[2.5rem] bg-white group hover:shadow-2xl transition-all border border-gray-100", className)}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className={cn("card-premium p-6 group hover:shadow-glow/5", className)}
     >
-      <div className="flex items-start justify-between mb-8">
-        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-primary-dark group-hover:bg-primary-dark group-hover:text-white transition-all shadow-sm">
-          <Icon size={20} />
+      <div className="flex items-start justify-between mb-6">
+        <div className="w-10 h-10 bg-white/[0.03] border border-white/5 rounded-xl flex items-center justify-center text-text-secondary group-hover:bg-accent-primary group-hover:text-bg-main transition-all duration-300">
+          <Icon size={18} />
         </div>
         {change && (
           <div className={cn(
-            "flex items-center gap-1.5 text-[10px] font-black px-3 py-1 rounded-full",
-            trend === "up" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-red-50 text-red-600 border border-red-100"
+            "flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-lg border",
+            trend === "up" ? "bg-accent-soft text-accent-primary border-accent-primary/20" : "bg-red-500/10 text-red-400 border-red-500/20"
           )}>
-            {trend === "up" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+            {trend === "up" ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
             {change}
           </div>
         )}
       </div>
       <div className="space-y-1">
-        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{label}</p>
-        <h2 className="text-5xl editorial-heading text-ink italic tabular-nums leading-none">{value}</h2>
-        {description && <p className="text-[10px] text-gray-400 font-medium mt-2">{description}</p>}
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">{label}</p>
+        <h2 className="text-4xl font-display font-extrabold text-text-primary tabular-nums tracking-tight">{value}</h2>
+        {description && <p className="text-[10px] text-text-secondary font-medium tracking-wide opacity-50">{description}</p>}
       </div>
     </motion.div>
   );

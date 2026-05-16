@@ -28,13 +28,13 @@ interface Task {
 
 export const TaskPriorityBadge = ({ priority }: { priority: Task['priority'] }) => {
   const colors = {
-    Urgent: "bg-red-100 text-red-700 border-red-200",
-    High: "bg-orange-50 text-orange-700 border-orange-100",
-    Medium: "bg-blue-50 text-blue-700 border-blue-100",
-    Low: "bg-gray-50 text-gray-500 border-gray-100"
+    Urgent: "bg-red-500/10 text-red-400 border-red-500/20",
+    High: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    Medium: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    Low: "bg-white/5 text-text-secondary border-white/10"
   };
   return (
-    <span className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border", colors[priority])}>
+    <span className={cn("px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-[0.1em] border transition-colors", colors[priority])}>
       {priority}
     </span>
   );
@@ -42,14 +42,14 @@ export const TaskPriorityBadge = ({ priority }: { priority: Task['priority'] }) 
 
 export const TaskStatusBadge = ({ status }: { status: Task['status'] }) => {
   const colors = {
-    Todo: "bg-gray-50 text-gray-400 border-gray-100",
-    "In Progress": "bg-primary-light text-primary-dark border-primary-light",
-    Review: "bg-amber-50 text-amber-600 border-amber-100",
-    Blocked: "bg-red-50 text-red-500 border-red-100",
-    Completed: "bg-emerald-50 text-emerald-600 border-emerald-100"
+    Todo: "bg-white/5 text-text-secondary/60 border-white/10",
+    "In Progress": "bg-accent-soft text-accent-primary border-accent-primary/20",
+    Review: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    Blocked: "bg-red-500/10 text-red-500 border-red-500/20",
+    Completed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
   };
   return (
-    <span className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border", colors[status])}>
+    <span className={cn("px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-[0.1em] border transition-colors", colors[status])}>
       {status}
     </span>
   );

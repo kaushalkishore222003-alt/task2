@@ -16,14 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { TaskPriorityBadge, TaskStatusBadge } from '../../components/tasks/TaskBadges';
-
-const TASKS = [
-  { id: 1, title: 'Finalize typography system for Fintech Rebrand', project: 'Fintech Rebrand', priority: 'High', status: 'In Progress', assignee: 'Alex Johnson', date: 'May 20', progress: 65 },
-  { id: 2, title: 'Draft API documentation for new internal portal', project: 'API Refactor', priority: 'Medium', status: 'Todo', assignee: 'Sarah Chen', date: 'May 22', progress: 0 },
-  { id: 3, title: 'Client review session - Phase 1 assets', project: 'Fintech Rebrand', priority: 'High', status: 'Completed', assignee: 'Alex Johnson', date: 'May 15', progress: 100 },
-  { id: 4, title: 'Performance audit of the core engine', project: 'Systems Team', priority: 'Urgent', status: 'Blocked', assignee: 'Marcus Miller', date: 'Jun 02', progress: 15 },
-  { id: 5, title: 'Asset preparation for Q3 Roadmap presentation', project: 'Strategy', priority: 'Medium', status: 'In Progress', assignee: 'Sarah Chen', date: 'May 18', progress: 45 },
-];
+import { TASKS } from '../../data/constants';
 
 export default function TasksPage() {
   const [filter, setFilter] = useState<'All' | 'Todo' | 'In Progress' | 'Completed' | 'Review' | 'Blocked'>('All');
@@ -40,46 +33,46 @@ export default function TasksPage() {
     <div className="space-y-12 pb-24">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div className="space-y-4">
-          <h1 className="text-5xl editorial-heading text-ink">Work Units.</h1>
-          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-             <span className="flex items-center gap-1.5"><Layers size={14} className="text-primary-dark" /> Enterprise Backlog</span>
-             <span className="w-1 h-1 bg-gray-200 rounded-full" />
-             <span className="text-ink">{TASKS.length} Units Distributed</span>
+        <div className="space-y-2">
+          <h1 className="text-4xl font-display font-bold text-text-primary tracking-tight">Work Backlog<span className="text-accent-primary">.</span></h1>
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary">
+             <span className="flex items-center gap-1.5"><Layers size={14} className="text-accent-primary" /> Enterprise Inventory</span>
+             <span className="w-1 h-1 bg-white/10 rounded-full" />
+             <span className="text-text-primary/70">{TASKS.length} Units Active</span>
           </div>
         </div>
 
-        <button className="flex items-center gap-2 px-8 py-4 bg-primary-dark text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-ink shadow-2xl shadow-primary-dark/20 transition-all active:scale-[0.98]">
-          <Plus size={16} /> Allocate Task
+        <button className="btn-primary py-3.5 px-8 text-xs tracking-widest">
+          <Plus size={18} className="mr-2" /> Allocate Task
         </button>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {[
-          { label: 'Total', val: TASKS.length, color: 'bg-gray-50 text-ink' },
-          { label: 'Live', val: 2, color: 'bg-primary-light text-primary-dark' },
-          { label: 'Block', val: 1, color: 'bg-red-50 text-red-600' },
-          { label: 'Review', val: 0, color: 'bg-amber-50 text-amber-600' },
-          { label: 'Done', val: 1, color: 'bg-emerald-50 text-emerald-600' },
+          { label: 'Total units', val: TASKS.length, color: 'text-text-primary bg-white/[0.03]' },
+          { label: 'Live track', val: 2, color: 'text-accent-primary bg-accent-soft' },
+          { label: 'Critical block', val: 1, color: 'text-red-400 bg-red-500/10' },
+          { label: 'Pending review', val: 0, color: 'text-amber-400 bg-amber-500/10' },
+          { label: 'Deployed', val: 1, color: 'text-emerald-400 bg-emerald-500/10' },
         ].map((s, i) => (
-          <div key={i} className={cn("p-6 rounded-[2rem] border border-gray-100 flex flex-col justify-between aspect-square md:aspect-auto", s.color)}>
-             <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{s.label}</span>
-             <span className="text-4xl editorial-heading mt-2 tabular-nums">{s.val}</span>
+          <div key={i} className={cn("p-6 rounded-2xl border border-white/5 flex flex-col justify-between aspect-video md:aspect-auto", s.color)}>
+             <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">{s.label}</span>
+             <span className="text-3xl font-display font-black mt-2 tabular-nums">{s.val}</span>
           </div>
         ))}
       </div>
 
       {/* Filters & Search */}
-      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between border-b border-gray-100 pb-10">
-        <div className="flex bg-gray-100/50 p-1.5 rounded-[1.5rem] border border-gray-100 w-full lg:w-auto overflow-x-auto scrollbar-hide">
+      <div className="flex flex-col lg:flex-row gap-6 items-center justify-between border-b border-white/[0.05] pb-8 text-sm">
+        <div className="flex bg-white/[0.02] p-1 rounded-xl border border-white/5 w-full lg:w-auto overflow-x-auto scrollbar-hide">
           {['All', 'Todo', 'In Progress', 'Completed', 'Review', 'Blocked'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f as any)}
               className={cn(
-                "px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                filter === f ? "bg-white text-ink shadow-sm ring-1 ring-gray-100" : "text-gray-400 hover:text-gray-600"
+                "px-5 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                filter === f ? "bg-white/[0.05] text-accent-primary shadow-sm ring-1 ring-white/10" : "text-text-secondary hover:text-text-primary hover:bg-white/[0.02]"
               )}
             >
               {f}
@@ -87,75 +80,75 @@ export default function TasksPage() {
           ))}
         </div>
 
-        <div className="relative w-full lg:w-96">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+        <div className="relative w-full lg:w-80 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-accent-primary transition-colors" size={16} />
           <input 
             type="text" 
-            placeholder="Search by keywords or project..."
+            placeholder="Search work..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-100 rounded-[2rem] py-4 pl-14 pr-8 text-sm focus:ring-4 focus:ring-primary-dark/5 focus:border-primary-dark outline-none transition-all placeholder-gray-300 font-medium"
+            className="input-premium pl-11 py-2.5 text-xs"
           />
         </div>
       </div>
 
       {/* Tasks Table */}
-      <div className="card-base rounded-[3rem] bg-white overflow-hidden border border-gray-100 shadow-xl shadow-gray-100/30">
+      <div className="card-premium overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Unit Identifier</th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Assignment</th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Metric</th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Threshold</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Ops</th>
+              <tr className="bg-white/[0.02] border-b border-white/[0.05]">
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Identifier</th>
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Execution</th>
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Completion Index</th>
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60">Deadline</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary/60 text-right">Ops</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-white/[0.04]">
               {filteredTasks.map((task) => (
-                <tr key={task.id} className="hover:bg-gray-50/30 transition-colors group">
-                  <td className="px-10 py-8 min-w-[320px]">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary-dark/40 italic">{task.project}</span>
-                        <div className="w-1 h-1 bg-gray-200 rounded-full" />
+                <tr key={task.id} className="hover:bg-white/[0.02] transition-colors group">
+                  <td className="px-8 py-6 min-w-[300px]">
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-accent-primary opacity-60 tracking-tighter">{task.project}</span>
+                        <div className="w-1 h-1 bg-white/10 rounded-full" />
                         <TaskPriorityBadge priority={task.priority as any} />
                       </div>
-                      <h4 className="font-bold text-lg text-ink group-hover:text-primary-dark transition-colors">{task.title}</h4>
+                      <h4 className="font-bold text-text-primary group-hover:text-accent-primary transition-colors">{task.title}</h4>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-6 min-w-[180px]">
                     <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-2xl bg-primary-light flex items-center justify-center text-primary-dark font-black text-xs shadow-sm group-hover:bg-primary-dark group-hover:text-white transition-all">
+                       <div className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-accent-primary font-black text-[10px] group-hover:bg-accent-primary group-hover:text-bg-main transition-all">
                           {task.assignee.split(' ').map(n=>n[0]).join('')}
                        </div>
                        <div>
-                          <p className="text-sm font-bold text-ink">{task.assignee}</p>
-                          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Lead Member</p>
+                          <p className="text-xs font-bold text-text-primary">{task.assignee}</p>
+                          <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.15em] opacity-40">Lead Talent</p>
                        </div>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
+                  <td className="px-6 py-6 min-w-[160px]">
                     <div className="space-y-2">
-                       <div className="flex items-center justify-between text-[10px] font-black uppercase text-gray-400 tracking-widest">
-                          <span>{task.progress}%</span>
+                       <div className="flex items-center justify-between text-[9px] font-black uppercase text-text-secondary tracking-[0.1em]">
+                          <span className="text-text-primary/70">{task.progress}%</span>
                           <TaskStatusBadge status={task.status as any} />
                        </div>
-                       <div className="w-32 bg-gray-50 h-1.5 rounded-full overflow-hidden p-0.5 border border-gray-100">
-                          <div className="h-full bg-primary-dark rounded-full transition-all duration-1000" style={{ width: `${task.progress}%` }}></div>
+                       <div className="w-full bg-white/[0.05] h-1.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                          <div className="h-full bg-accent-primary rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(16,185,129,0.3)]" style={{ width: `${task.progress}%` }}></div>
                        </div>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
-                     <div className="flex items-center gap-2.5 px-4 py-2 bg-gray-50 rounded-2xl w-fit border border-gray-100">
-                        <Calendar size={14} className="text-gray-300" />
-                        <span className="text-[10px] font-black uppercase text-ink">{task.date}</span>
+                  <td className="px-6 py-6">
+                     <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-lg w-fit border border-white/5">
+                        <Calendar size={12} className="text-text-secondary/50" />
+                        <span className="text-[10px] font-bold text-text-primary/80">{task.date}</span>
                      </div>
                   </td>
-                  <td className="px-10 py-8 text-right">
-                    <button className="p-3 hover:bg-gray-100 rounded-2xl transition-all text-gray-300 hover:text-ink">
-                       <MoreHorizontal size={20} />
+                  <td className="px-8 py-6 text-right">
+                    <button className="p-2 hover:bg-white/[0.05] rounded-lg transition-all text-text-secondary hover:text-text-primary">
+                       <MoreHorizontal size={18} />
                     </button>
                   </td>
                 </tr>
@@ -165,13 +158,13 @@ export default function TasksPage() {
         </div>
         
         {filteredTasks.length === 0 && (
-          <div className="py-32 text-center space-y-6">
-             <div className="w-24 h-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto border border-gray-100">
-                <BarChart3 size={32} className="text-gray-200" />
+          <div className="py-24 text-center space-y-6">
+             <div className="w-20 h-20 bg-white/[0.02] rounded-3xl flex items-center justify-center mx-auto border border-white/5">
+                <Layers size={32} className="text-text-secondary/20" />
              </div>
              <div>
-                <p className="text-2xl font-bold text-ink italic underline decoration-primary-light decoration-4 underline-offset-8">No matching Units.</p>
-                <p className="text-sm text-gray-400 font-medium mt-2">Adjust your refinement parameters to locate data.</p>
+                <p className="text-xl font-display font-bold text-text-primary">No Matching Units</p>
+                <p className="text-xs text-text-secondary mt-2 opacity-60">Try refining your filter parameters.</p>
              </div>
           </div>
         )}

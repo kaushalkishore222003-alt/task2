@@ -11,6 +11,7 @@ export interface User {
   avatar?: string;
   role: Role;
   joinedAt: string;
+  workspaceId: string;
 }
 
 export interface Project {
