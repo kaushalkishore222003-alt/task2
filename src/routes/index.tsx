@@ -25,6 +25,7 @@ const NotificationsPage = lazy(() => import("../pages/notifications/Notification
 const TeamPage = lazy(() => import("../pages/team/TeamPage"));
 const ProfilePage = lazy(() => import("../pages/profile/ProfilePage"));
 const SettingsPage = lazy(() => import("../pages/settings/SettingsPage"));
+const ReportsPage = lazy(() => import("../pages/reports/ReportsPage"));
 const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 
 export const router = createBrowserRouter([
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
           { path: "tasks", element: <TasksPage /> },
           { path: "kanban", element: <KanbanPage /> },
           { path: "analytics", element: <ProtectedRoute allowedRoles={['ADMIN']} />, children: [{ index: true, element: <AnalyticsPage /> }] },
+          { path: "reports", element: <ReportsPage /> },
           { path: "notifications", element: <NotificationsPage /> },
           { path: "team", element: <TeamPage /> },
           { path: "profile", element: <ProfilePage /> },

@@ -29,15 +29,18 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     setAuthError(null);
     try {
-      // Mock logic: admin@gmail.com / member@gmail.com with password123
+      // Mock logic: allow kaushalkishore222003@gmail.com, admin@gmail.com / member@gmail.com with password123
       const isCorrectPassword = data.password === 'password123';
-      const role = data.email === 'admin@gmail.com' ? 'ADMIN' : 'MEMBER';
+      const adminEmails = ['admin@gmail.com', 'kaushalkishore222003@gmail.com'];
+      const allowedEmails = [...adminEmails, 'member@gmail.com'];
       
-      if ((data.email === 'admin@gmail.com' || data.email === 'member@gmail.com') && isCorrectPassword) {
+      const role = adminEmails.includes(data.email) ? 'ADMIN' : 'MEMBER';
+      
+      if (allowedEmails.includes(data.email) && isCorrectPassword) {
         await login(data.email, role);
         navigate('/dashboard');
       } else {
-        setAuthError('Invalid credentials. Use admin@gmail.com or member@gmail.com with password123');
+        setAuthError(`Invalid credentials. Use one of [${allowedEmails.join(', ')}] with password123`);
       }
     } catch (error) {
       setAuthError('An unexpected error occurred. Please try again.');
